@@ -11,6 +11,8 @@ environment:
 dependencies:
   bdaya_repository_pattern:
   get:
+  hive:
+  hive_flutter:
   flutter:
     sdk: flutter
 
