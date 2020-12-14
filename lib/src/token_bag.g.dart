@@ -8,7 +8,7 @@ part of 'token_bag.dart';
 
 class UserTokenBagAdapter extends TypeAdapter<UserTokenBag> {
   @override
-  final int typeId = 255;
+  final int typeId = 223;
 
   @override
   UserTokenBag read(BinaryReader reader) {
