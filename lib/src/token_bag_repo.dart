@@ -61,8 +61,11 @@ class UserTokenRepo extends ActiveRepo<String, UserTokenBag> {
                   bag.accessToken,
                   bag.refreshToken,
                 );
-                await dataBox.put(userId, res);
-                handleNewTokenBag?.call(res);
+                bag.accessToken = res.accessToken;
+                bag.accessTokenExpireAt = res.expireAt;
+                bag.accessTokenIssuedAt = res.issuedAt;
+                await dataBox.put(userId, bag);
+                handleNewTokenBag?.call(bag);
               } catch (e) {
                 if (requestUserRelogin != null) {
                   await requestUserRelogin();
