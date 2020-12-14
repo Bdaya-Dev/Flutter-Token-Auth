@@ -1,6 +1,6 @@
 import 'package:bdaya_repository_pattern/bdaya_repository_pattern.dart';
 part 'token_bag.g.dart';
-@HiveType(typeId: 255)
+@HiveType(typeId: 223)
 class UserTokenBag extends GuidHiveObject {
   @HiveField(0)
   String accessToken;
