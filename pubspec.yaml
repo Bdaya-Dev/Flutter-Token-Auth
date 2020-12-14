@@ -13,9 +13,11 @@ dependencies:
   get:
   hive:
   hive_flutter:
+  hive_generator:
   flutter:
     sdk: flutter
 
 dev_dependencies:
+  build_runner:
   flutter_test:
     sdk: flutter
