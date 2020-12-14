@@ -14,6 +14,7 @@ dependencies:
   hive:
   hive_flutter:
   hive_generator:
+  corsac_jwt: ^0.4.0
   flutter:
     sdk: flutter
 

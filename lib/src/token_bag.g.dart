@@ -20,15 +20,13 @@ class UserTokenBagAdapter extends TypeAdapter<UserTokenBag> {
       ..accessToken = fields[0] as String
       ..accessTokenIssuedAt = fields[1] as DateTime
       ..accessTokenExpireAt = fields[2] as DateTime
-      ..refreshToken = fields[3] as String
-      ..refreshTokenIssuedAt = fields[4] as DateTime
-      ..refreshTokenExpireAt = fields[5] as DateTime;
+      ..refreshToken = fields[3] as String;
   }
 
   @override
   void write(BinaryWriter writer, UserTokenBag obj) {
     writer
-      ..writeByte(6)
+      ..writeByte(4)
       ..writeByte(0)
       ..write(obj.accessToken)
       ..writeByte(1)
@@ -36,11 +34,7 @@ class UserTokenBagAdapter extends TypeAdapter<UserTokenBag> {
       ..writeByte(2)
       ..write(obj.accessTokenExpireAt)
       ..writeByte(3)
-      ..write(obj.refreshToken)
-      ..writeByte(4)
-      ..write(obj.refreshTokenIssuedAt)
-      ..writeByte(5)
-      ..write(obj.refreshTokenExpireAt);
+      ..write(obj.refreshToken);
   }
 
   @override

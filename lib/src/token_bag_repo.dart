@@ -2,14 +2,15 @@ import 'dart:async';
 
 import 'package:bdaya_flutter_token_auth/src/token_bag.dart';
 import 'package:bdaya_repository_pattern/bdaya_repository_pattern.dart';
+import 'package:corsac_jwt/corsac_jwt.dart';
 
 import 'access_token.dart';
 
 class UserTokenRepo extends ActiveRepo<String, UserTokenBag> {
   @override
   String get boxName => 'user_token';
-  final Future<AccessToken> Function(String accessToken, String refreshToken)
-      requestTokenRefresh;
+  final Future<String> Function(String accessToken, String refreshToken)
+      requestNewAccessToken;
   final Future<void> Function(UserTokenBag tokenBag) handleNewTokenBag;
   final Future<void> Function() requestUserRelogin;
 
@@ -17,22 +18,18 @@ class UserTokenRepo extends ActiveRepo<String, UserTokenBag> {
   Future<void> registerTokenBag(
     String userId, {
     String accessToken,
-    DateTime accessTokenIssuedAt,
-    DateTime accessTokenExpireAt,
     String refreshToken,
-    DateTime refreshTokenIssuedAt,
-    DateTime refreshTokenExpireAt,
   }) async {
+    final parsed = JWT.parse(accessToken);
     await dataBox.put(
-      userId,
-      UserTokenBag()
-        ..accessToken = accessToken
-        ..accessTokenExpireAt = accessTokenExpireAt
-        ..accessTokenIssuedAt = accessTokenIssuedAt
-        ..refreshToken = refreshToken
-        ..refreshTokenExpireAt = refreshTokenExpireAt
-        ..refreshTokenIssuedAt = refreshTokenIssuedAt,
-    );
+        userId,
+        UserTokenBag()
+          ..accessToken = accessToken
+          ..accessTokenExpireAt =
+              DateTime.fromMillisecondsSinceEpoch(parsed.expiresAt * 1000)
+          ..accessTokenIssuedAt =
+              DateTime.fromMillisecondsSinceEpoch(parsed.issuedAt * 1000)
+          ..refreshToken = refreshToken);
   }
 
   Future<void> logoutUser(String userId) async {
@@ -40,7 +37,7 @@ class UserTokenRepo extends ActiveRepo<String, UserTokenBag> {
   }
 
   UserTokenRepo(
-    this.requestTokenRefresh, {
+    this.requestNewAccessToken, {
     this.handleNewTokenBag,
     this.requestUserRelogin,
     this.accessTokenRecheckInterval = const Duration(minutes: 5),
@@ -54,26 +51,25 @@ class UserTokenRepo extends ActiveRepo<String, UserTokenBag> {
           final bag = userEntry.value;
           if (bag.accessTokenExpireAt.isAfter(DateTime.now())) {
             //access token is expired
-            if (bag.refreshTokenExpireAt.isBefore(DateTime.now())) {
-              //refresh token is expired
+            if (bag.refreshToken == null) {
+              //no refresh token
+              await requestUserRelogin?.call();
+            } else {
               try {
-                final res = await requestTokenRefresh(
+                final token = await requestNewAccessToken(
                   bag.accessToken,
                   bag.refreshToken,
                 );
-                bag.accessToken = res.accessToken;
-                bag.accessTokenExpireAt = res.expireAt;
-                bag.accessTokenIssuedAt = res.issuedAt;
-                await dataBox.put(userId, bag);
-                handleNewTokenBag?.call(bag);
+                await registerTokenBag(
+                  userId,
+                  accessToken: token,
+                  refreshToken: bag.refreshToken,
+                );
+
+                await handleNewTokenBag?.call(bag);
               } catch (e) {
-                if (requestUserRelogin != null) {
-                  await requestUserRelogin();
-                }
-              }
-            } else {
-              if (requestUserRelogin != null) {
-                await requestUserRelogin();
+                await requestUserRelogin?.call();
+                await clear();
               }
             }
           }
