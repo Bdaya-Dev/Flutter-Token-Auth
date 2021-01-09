@@ -35,6 +35,7 @@ class UserTokenRepo extends ActiveRepo<String, UserTokenBag> {
   /// true if auth successful, false if not
   Future<bool> initAuthLogic() async {
     final entry = this.firstOrNull;
+    if (entry == null) return false;
     final userId = entry.key;
     final bag = entry.value;
     if (!isTokenValid(bag)) {
