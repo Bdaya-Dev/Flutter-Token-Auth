@@ -9,7 +9,7 @@ environment:
   flutter: ">=1.17.0"
 
 dependencies:
-  bdaya_repository_pattern:
+  bdaya_repository_pattern: ^1.2.1+4
   get:
   hive:
   hive_flutter:

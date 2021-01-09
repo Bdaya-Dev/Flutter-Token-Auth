@@ -32,8 +32,48 @@ class UserTokenRepo extends ActiveRepo<String, UserTokenBag> {
           ..refreshToken = refreshToken);
   }
 
+  /// true if auth successful, false if not
+  Future<bool> initAuthLogic() async {
+    final entry = this.firstOrNull;
+    final userId = entry.key;
+    final bag = entry.value;
+    if (!isTokenValid(bag)) {
+      if (bag.refreshToken == null) {
+        //no refresh token
+        return false;
+      } else {
+        try {
+          final token = await requestNewAccessToken(
+            bag.accessToken,
+            bag.refreshToken,
+          );
+          await registerTokenBag(
+            userId,
+            accessToken: token,
+            refreshToken: bag.refreshToken,
+          );
+
+          await handleNewTokenBag?.call(bag);
+          return true;
+        } catch (e) {
+          await clear();
+          return false;
+        }
+      }
+    }
+    return true;
+  }
+
   Future<void> logoutUser(String userId) async {
     await deleteKeys([userId]);
+  }
+
+  bool isTokenValid(UserTokenBag bag) {
+    if (bag.accessTokenExpireAt.isAfter(DateTime.now())) {
+      //access token is expired
+      return false;
+    }
+    return true;
   }
 
   UserTokenRepo(
@@ -45,32 +85,29 @@ class UserTokenRepo extends ActiveRepo<String, UserTokenBag> {
     Timer.periodic(
       accessTokenRecheckInterval,
       (timer) async {
-        final vals = getAllValues().entries;
-        for (var userEntry in vals) {
-          final userId = userEntry.key;
-          final bag = userEntry.value;
-          if (bag.accessTokenExpireAt.isAfter(DateTime.now())) {
-            //access token is expired
-            if (bag.refreshToken == null) {
-              //no refresh token
-              await requestUserRelogin?.call();
-            } else {
-              try {
-                final token = await requestNewAccessToken(
-                  bag.accessToken,
-                  bag.refreshToken,
-                );
-                await registerTokenBag(
-                  userId,
-                  accessToken: token,
-                  refreshToken: bag.refreshToken,
-                );
+        final entry = this.firstOrNull;
+        final userId = entry.key;
+        final bag = entry.value;
+        if (isTokenValid(bag)) {
+          if (bag.refreshToken == null) {
+            //no refresh token
+            await requestUserRelogin?.call();
+          } else {
+            try {
+              final token = await requestNewAccessToken(
+                bag.accessToken,
+                bag.refreshToken,
+              );
+              await registerTokenBag(
+                userId,
+                accessToken: token,
+                refreshToken: bag.refreshToken,
+              );
 
-                await handleNewTokenBag?.call(bag);
-              } catch (e) {
-                await requestUserRelogin?.call();
-                await clear();
-              }
+              await handleNewTokenBag?.call(bag);
+            } catch (e) {
+              await requestUserRelogin?.call();
+              await clear();
             }
           }
         }
