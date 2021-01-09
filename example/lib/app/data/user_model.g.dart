@@ -1,39 +1,36 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'token_bag.dart';
+part of 'user_model.dart';
 
 // **************************************************************************
 // TypeAdapterGenerator
 // **************************************************************************
 
-class UserTokenBagAdapter extends TypeAdapter<UserTokenBag> {
+class UserModelAdapter extends TypeAdapter<UserModel> {
   @override
-  final int typeId = 222;
+  final int typeId = 0;
 
   @override
-  UserTokenBag read(BinaryReader reader) {
+  UserModel read(BinaryReader reader) {
     final numOfFields = reader.readByte();
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return UserTokenBag()
+    return UserModel()
       ..accessToken = fields[0] as String
-      ..accessTokenIssuedAt = fields[1] as DateTime
-      ..accessTokenExpireAt = fields[2] as DateTime
-      ..refreshToken = fields[3] as String;
+      ..accessTokenExpireAt = fields[1] as DateTime
+      ..refreshToken = fields[2] as String;
   }
 
   @override
-  void write(BinaryWriter writer, UserTokenBag obj) {
+  void write(BinaryWriter writer, UserModel obj) {
     writer
-      ..writeByte(4)
+      ..writeByte(3)
       ..writeByte(0)
       ..write(obj.accessToken)
       ..writeByte(1)
-      ..write(obj.accessTokenIssuedAt)
-      ..writeByte(2)
       ..write(obj.accessTokenExpireAt)
-      ..writeByte(3)
+      ..writeByte(2)
       ..write(obj.refreshToken);
   }
 
@@ -43,7 +40,7 @@ class UserTokenBagAdapter extends TypeAdapter<UserTokenBag> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is UserTokenBagAdapter &&
+      other is UserModelAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }
