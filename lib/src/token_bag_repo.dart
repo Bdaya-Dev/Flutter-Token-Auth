@@ -8,7 +8,8 @@ abstract class UserTokenRepoBase<T extends UserTokenBag>
     extends ActiveRepo<String, T> {
   @override
   String get boxName => 'user_token';
-  final Future<T> Function(T oldBag) requestNewTokenBag;
+  Future<T> requestNewTokenBag(T oldBag);
+
   Timer _authTimer;
   Future<void> registerTokenBag(String userId, T tokenBag) async {
     tokenBag.fillFromAccessTokenJwt();
@@ -61,7 +62,7 @@ abstract class UserTokenRepoBase<T extends UserTokenBag>
     return true;
   }
 
-  UserTokenRepoBase(this.requestNewTokenBag);
+  UserTokenRepoBase();
 
   Future<void> dispose() async {
     await _selfStream?.cancel();
