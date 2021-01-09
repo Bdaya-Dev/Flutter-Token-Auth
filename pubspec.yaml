@@ -1,6 +1,6 @@
 name: bdaya_token_auth
 description: Handle auth token refresh.
-version: 1.0.0
+version: 1.0.1
 homepage: https://github.com/Bdaya-Dev/Flutter-Token-Auth
 repository: https://github.com/Bdaya-Dev/Flutter-Token-Auth
 

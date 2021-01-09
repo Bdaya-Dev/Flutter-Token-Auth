@@ -1,7 +1,10 @@
 import 'package:bdaya_repository_pattern/bdaya_repository_pattern.dart';
 import 'package:corsac_jwt/corsac_jwt.dart';
 
-abstract class UserTokenBag extends GuidHiveObject {
+abstract class UserTokenBag<TKey> extends HiveObject {
+  @override
+  TKey get key => super.key;
+
   String get accessToken;
   set accessToken(String accessToken);
 
