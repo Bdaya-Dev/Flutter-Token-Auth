@@ -70,7 +70,7 @@ class UserTokenRepo extends ActiveRepo<String, UserTokenBag> {
   }
 
   bool isTokenValid(UserTokenBag bag) {
-    if (bag.accessTokenExpireAt.isAfter(DateTime.now())) {
+    if (bag.accessTokenExpireAt.isBefore(DateTime.now())) {
       //access token is expired
       return false;
     }
