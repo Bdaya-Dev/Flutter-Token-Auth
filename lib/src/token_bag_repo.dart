@@ -4,14 +4,14 @@ import 'package:bdaya_repository_pattern/bdaya_repository_pattern.dart';
 
 import '../bdaya_token_auth.dart';
 
-abstract class UserTokenRepoBase<T extends UserTokenBag>
-    extends ActiveRepo<String, T> {
+abstract class UserTokenRepoBase<TKey, T extends UserTokenBag<TKey>>
+    extends ActiveRepo<TKey, T> {
   @override
   String get boxName => 'user_token';
   Future<T> requestNewTokenBag(T oldBag);
 
   Timer _authTimer;
-  Future<void> registerTokenBag(String userId, T tokenBag) async {
+  Future<void> registerTokenBag(TKey userId, T tokenBag) async {
     tokenBag.fillFromAccessTokenJwt();
     await assignAll({userId: tokenBag});
   }

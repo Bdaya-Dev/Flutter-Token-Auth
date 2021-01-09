@@ -1,3 +1,7 @@
+## [1.0.3] - Initial release
+
+* Replace key with generic parameter
+
 ## [1.0.2] - Initial release
 
 * Use abstract method instead of passing a delegate
