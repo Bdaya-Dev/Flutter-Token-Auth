@@ -1,4 +1,4 @@
-import 'package:bdaya_flutter_token_auth/bdaya_flutter_token_auth.dart';
+import 'package:bdaya_token_auth/bdaya_token_auth.dart';
 import 'package:hive/hive.dart';
 part 'user_model.g.dart';
 

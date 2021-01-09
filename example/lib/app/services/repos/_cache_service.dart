@@ -1,4 +1,3 @@
-import 'package:bdaya_flutter_token_auth/bdaya_flutter_token_auth.dart';
 import 'package:bdaya_repository_pattern/bdaya_repository_pattern.dart';
 import 'package:bearer_example/app/data/user_model.dart';
 import 'package:bearer_example/app/services/repos/user_repo.dart';

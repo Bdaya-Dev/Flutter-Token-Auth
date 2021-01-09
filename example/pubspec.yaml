@@ -22,7 +22,7 @@ environment:
 
 dependencies:
   get: ^3.24.0
-  bdaya_flutter_token_auth:
+  bdaya_token_auth:
     path: ../
   hive:
   hive_flutter:

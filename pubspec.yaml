@@ -6,13 +6,10 @@ repository: https://github.com/Bdaya-Dev/Flutter-Token-Auth
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
-  flutter: ">=1.17.0"
 
 dependencies:
   bdaya_repository_pattern: ^2.0.0
   corsac_jwt: ^0.4.0
-  flutter:
-    sdk: flutter
 
 dev_dependencies:
   flutter_test:
