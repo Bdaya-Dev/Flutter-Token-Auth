@@ -1,3 +1,6 @@
+## [1.0.4]
+* Added extra validation
+
 ## [1.0.3] - Initial release
 
 * Replace key with generic parameter

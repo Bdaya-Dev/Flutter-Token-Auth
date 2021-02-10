@@ -44,7 +44,8 @@ abstract class UserTokenRepoBase<TKey, T extends UserTokenBag<TKey>>
     if (entry == null) return null;
     final userId = entry.key;
     final bag = entry.value;
-    if (!bag.isValid) {
+    if (!bag.isValid || !await extraValidation(userId, bag)) {
+      //token bag expired
       if (bag.refreshToken == null) {
         //no refresh token
         return false;
@@ -61,6 +62,9 @@ abstract class UserTokenRepoBase<TKey, T extends UserTokenBag<TKey>>
     }
     return true;
   }
+
+  /// override this if you want to do extra validation on the token bag after checking its expiration date
+  Future<bool> extraValidation(TKey userId, T bag) => Future.value(true);
 
   UserTokenRepoBase();
 
