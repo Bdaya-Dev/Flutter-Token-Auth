@@ -1,15 +1,15 @@
 name: bdaya_token_auth
 description: Handle auth token refresh.
-version: 1.0.4
+version: 2.0.0-dev.1
 homepage: https://github.com/Bdaya-Dev/Flutter-Token-Auth
 repository: https://github.com/Bdaya-Dev/Flutter-Token-Auth
 
 environment:
-  sdk: ">=2.7.0 <3.0.0"
+  sdk: ">=2.12.0 <3.0.0"
 
 dependencies:
-  bdaya_repository_pattern: ^2.0.0
-  corsac_jwt: ^0.4.0
+  bdaya_repository_pattern: ^3.0.0-dev.1
+  jose: ^0.3.0-nullsafety.2
 
 dev_dependencies:
   flutter_test:

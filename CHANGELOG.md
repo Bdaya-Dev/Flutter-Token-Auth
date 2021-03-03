@@ -1,3 +1,6 @@
+## [2.0.0-dev.1]
+* Migrate to nullsafety
+
 ## [1.0.4]
 * Added extra validation
 

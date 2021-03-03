@@ -10,25 +10,25 @@ abstract class UserTokenRepoBase<TKey, T extends UserTokenBag<TKey>>
   String get boxName => 'user_token';
   Future<T> requestNewTokenBag(T oldBag);
 
-  Timer _authTimer;
+  Timer? _authTimer;
   Future<void> registerTokenBag(TKey userId, T tokenBag) async {
     tokenBag.fillFromAccessTokenJwt();
     await assignAll({userId: tokenBag});
   }
 
-  StreamSubscription _selfStream;
+  StreamSubscription? _selfStream;
   void _initStream() {
     if (_selfStream != null) return;
     _selfStream = firstEntryStream(Duration(milliseconds: 200)).listen(
       (event) {
         _authTimer?.cancel();
-        if (event == null) {
+        if (event == null || event.value.accessTokenExpireAt == null) {
           //no token bags == no users, do nothing
           _authTimer = null;
         } else {
           //there is a token bag, init timer
           _authTimer = Timer(
-            event.value.accessTokenExpireAt.difference(DateTime.now()).abs() +
+            event.value.accessTokenExpireAt!.difference(DateTime.now()).abs() +
                 Duration(seconds: 10),
             initAuthLogic,
           );
@@ -38,9 +38,9 @@ abstract class UserTokenRepoBase<TKey, T extends UserTokenBag<TKey>>
   }
 
   /// true if auth successful, false if not, null if no user exists
-  Future<bool> initAuthLogic() async {
+  Future<bool?> initAuthLogic() async {
     _initStream();
-    final entry = this.firstOrNull;
+    final MapEntry<TKey, T>? entry = this.firstOrNull;
     if (entry == null) return null;
     final userId = entry.key;
     final bag = entry.value;
